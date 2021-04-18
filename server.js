@@ -74,6 +74,17 @@ const getEmployees = () => {
   connection.end();
 };
 
+const create = () => {
+  // collect database name and pull up the appropriate follow-up questions
+  // collect the rest of the information needed to create the entry
+  // put through the sql command to create the entry.
+  // call sselect * from the target database to display the updated list.
+};
+
+const update = () => {
+  // collect database name and pull up the appropriate follow-up questions
+};
+
 init();
 
 // app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
