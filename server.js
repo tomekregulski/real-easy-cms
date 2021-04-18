@@ -4,6 +4,9 @@ const inquirer = require("inquirer");
 const taskQuestions = require("./taskQuestion");
 const viewDb = require("./viewDb");
 const console_table = require("console.table");
+const updateEmployeeRole = require("./updateEmployeeRole");
+const updateEmployeeMgr = require("./updateEmployeeMgr");
+const updateMenu = require("./updateMenu");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
@@ -84,13 +87,63 @@ const create = () => {
   // put through the sql command to create the entry.
   // call select * from the target database to display the updated list.
 };
-
 const update = () => {
-  // collect ID of employee to update
-  // ask if updating role or manager
-  // enter new role or manager for employee
-  // put through the sql command to update the entry accordingly.
-  // call select * from the target database to display the updated list.
+  inquirer.prompt(updateMenu).then((data) => {
+    console.log(data.update);
+    if (data.update === "Role") {
+      console.log(data.update);
+      updateRole();
+    } else if (data.update === "Manager") {
+      console.log(data.update);
+      updateMgr();
+    }
+  });
+};
+
+const updateRole = () => {
+  inquirer.prompt(updateEmployeeRole).then((data) => {
+    console.log(data);
+    console.log("Updating employee role...\n");
+    //   const query = connection.query(
+    //     "UPDATE employees SET ? WHERE ?",
+    //     [
+    //       {
+    //         role: `${updateRole.role}`,
+    //       },
+    //       {
+    //         id: `${updateRole.id}`,
+    //       },
+    //     ],
+    //     (err, res) => {
+    //       if (err) throw err;
+    //       console.log(`${res.affectedRows} updated!\n`);
+    //     }
+    //   );
+    //   console.log(query.sql);
+  });
+};
+
+const updateMgr = () => {
+  inquirer.prompt(updateEmployeeMgr).then((data) => {
+    console.log(data);
+    console.log("Updating employee manager...\n");
+    // const query = connection.query(
+    //   "UPDATE employees SET ? WHERE ?",
+    //   [
+    //     {
+    //       manager: `${updateMgr.mgr}`,
+    //     },
+    //     {
+    //       id: `${updateMgr.id}`,
+    //     },
+    //   ],
+    //   (err, res) => {
+    //     if (err) throw err;
+    //     console.log(`${res.affectedRows} updated!\n`);
+    //   }
+    // );
+    // console.log(query.sql);
+  });
 };
 
 const remove = () => {
