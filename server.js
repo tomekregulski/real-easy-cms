@@ -3,6 +3,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const taskQuestions = require("./taskQuestion");
 const viewDb = require("./viewDb");
+const console_table = require("console.table");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
@@ -77,12 +78,30 @@ const getEmployees = () => {
 const create = () => {
   // collect database name and pull up the appropriate follow-up questions
   // collect the rest of the information needed to create the entry
+  // check that name is not a duplicate
   // put through the sql command to create the entry.
-  // call sselect * from the target database to display the updated list.
+  // call select * from the target database to display the updated list.
 };
 
 const update = () => {
-  // collect database name and pull up the appropriate follow-up questions
+  // collect ID of employee to update
+  // ask if updating role or manager
+  // enter new role or manager for employee
+  // put through the sql command to update the entry accordingly.
+  // call select * from the target database to display the updated list.
+};
+
+const remove = () => {
+  // collect database name
+  // collect ID of entry to remove
+  // put through the sql command to remove the entry.
+  // call select * from the target database to display the updated list.
+};
+
+const budget = () => {
+  // collect department name
+  // put through the sql command to get the sum total of salaries in that department
+  // call select * from the target department to display the itemized list.
 };
 
 init();
