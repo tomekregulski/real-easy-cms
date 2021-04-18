@@ -29,8 +29,10 @@ function init() {
       create();
     } else if (data.task === "Update Entry") {
       update();
-    } else if (data.task === "Update Entry") {
+    } else if (data.task === "Remove Entry") {
       remove();
+    } else if (data.task === "View Department Budget") {
+      budget();
     }
   });
 }
