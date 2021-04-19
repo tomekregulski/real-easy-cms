@@ -1,17 +1,17 @@
 // dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const taskQuestions = require("./taskQuestion");
-const viewDb = require("./viewDb");
+const taskQuestions = require("./db/questions/taskQuestion");
+const viewDb = require("./db/questions/viewDb");
 const console_table = require("console.table");
-const updateEmployeeRole = require("./updateEmployeeRole");
-const updateEmployeeMgr = require("./updateEmployeeMgr");
-const updateMenu = require("./updateMenu");
-const createDeptQues = require("./createDept");
-const createRoleQues = require("./createRole");
-const createEmployeeQues = require("./createEmployee");
-const createMenu = require("./createMenu");
-const removeMenu = require("./removeMenu");
+const updateEmployeeRole = require("./db/questions/updateEmployeeRole");
+const updateEmployeeMgr = require("./db/questions/updateEmployeeMgr");
+const updateMenu = require("./db/questions/updateMenu");
+const createDeptQues = require("./db/questions/createDept");
+const createRoleQues = require("./db/questions/createRole");
+const createEmployeeQues = require("./db/questions/createEmployee");
+const createMenu = require("./db/questions/createMenu");
+const removeMenu = require("./db/questions/removeMenu");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
