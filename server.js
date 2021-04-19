@@ -11,6 +11,7 @@ const createDeptQues = require("./createDept");
 const createRoleQues = require("./createRole");
 const createEmployeeQues = require("./createEmployee");
 const createMenu = require("./createMenu");
+const removeMenu = require("./removeMenu");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
@@ -67,7 +68,6 @@ const getDept = () => {
     if (err) throw err;
     console.log(res);
   });
-  //   connection.end();
   init();
 };
 
@@ -76,7 +76,6 @@ const getRoles = () => {
     if (err) throw err;
     console.log(res);
   });
-  //   connection.end();
   init();
 };
 
@@ -85,7 +84,6 @@ const getEmployees = () => {
     if (err) throw err;
     console.log(res);
   });
-  //   connection.end();
   init();
 };
 
@@ -127,23 +125,23 @@ const createRole = () => {
   console.log("Creating role...");
   inquirer.prompt(createRoleQues).then((data) => {
     console.log(data);
-    connection.query("INSERT INTO roles SET ?", [
+    roleTitle = data.roleTitle;
+    roleSalary = parseInt(data.roleSalary);
+    roleDept = parseInt(data.roleDept);
+    console.log(roleSalary);
+    console.log(roleDept);
+    connection.query(
+      "INSERT INTO roles SET ?",
       {
-        title: data.roleTitle,
-      },
-      {
-        salary: parseInt(data.roleSalary),
-      },
-      {
-        department_id: parseInt(data.roleDept),
+        title: roleTitle,
+        salary: roleSalary,
+        department_id: roleDept,
       },
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-        // re-prompt the user for if they want to bid or post
-      },
-    ]);
-    // connection.end();
+      }
+    );
     init();
   });
 };
@@ -152,25 +150,21 @@ const createEmployee = () => {
   console.log("Creating employee...");
   inquirer.prompt(createEmployeeQues).then((data) => {
     console.log(data);
-    connection.query("INSERT INTO employees SET ?", [
+    roleId = parseInt(data.roleId);
+    mgrId = parseInt(data.mgrId);
+    connection.query(
+      "INSERT INTO employees SET ?",
       {
         first_name: data.firstName,
-      },
-      {
         last_name: data.lastName,
-      },
-      {
-        role_id: parseInt(data.roleId),
-      },
-      {
-        manager_id: parseInt(data.mgrId),
+        role_id: roleId,
+        manager_id: mgrId,
       },
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-      },
-    ]);
-    // connection.end();
+      }
+    );
     init();
   });
 };
@@ -235,7 +229,6 @@ const updateMgr = () => {
         console.log(res);
       }
     );
-    // connection.end();
     init();
   });
 };
@@ -243,71 +236,61 @@ const updateMgr = () => {
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
     console.log(data);
-    if (data.remove === "Department") {
+    removeId = parseInt(data.id);
+    console.log(removeId);
+    if (data.remove === "Departments") {
       console.log(data.remove);
-      removeDepartment();
-    } else if (data.remove === "Role") {
+      removeDepartment(removeId);
+    } else if (data.remove === "Roles") {
       console.log(data.remove);
-      removeRole();
-    } else if (data.remove === "Employee") {
-      console.log(data.remove);
-      removeEmployee();
+      removeRole(removeId);
+    } else if (data.remove === "Employees") {
+      console.log("calling remove employee");
+      removeEmployee(removeId);
     }
   });
-  // collect database name
-  // collect ID of entry to remove
-  // put through the sql command to remove the entry.
-  // call select * from the target database to display the updated list.
 };
 
-const removeDepartment = () => {
-  inquirer.prompt(removeDeptQues).then((data) => {
-    console.log(data);
-    connection.query(
-      "DELETE FROM departments WHERE ?",
-      {
-        id: parseInt(removeId),
-      },
-      (err, res) => {
-        if (err) throw err;
-        console.log(`${res.affectedRows} deleted!\n`);
-      }
-    );
-    init();
-  });
+const removeDepartment = (removeId) => {
+  connection.query(
+    "DELETE FROM departments WHERE ?",
+    {
+      id: removeId,
+    },
+    (err, res) => {
+      if (err) throw err;
+      console.log(`${res.affectedRows} deleted!\n`);
+    }
+  );
+  init();
 };
 
-const removeRole = () => {
-  inquirer.prompt(removeRoleQues).then((data) => {
-    console.log(data);
-    connection.query(
-      "DELETE FROM roles WHERE ?",
-      {
-        id: parseInt(removeId),
-      },
-      (err, res) => {
-        if (err) throw err;
-        console.log(`${res.affectedRows} deleted!\n`);
-      }
-    );
-    init();
-  });
+const removeRole = (removeId) => {
+  connection.query(
+    "DELETE FROM roles WHERE ?",
+    {
+      id: removeId,
+    },
+    (err, res) => {
+      if (err) throw err;
+      console.log(`${res.affectedRows} deleted!\n`);
+    }
+  );
+  init();
 };
-const removeEmployee = () => {
-  inquirer.prompt(removeEmployeeQues).then((data) => {
-    console.log(data);
-    connection.query(
-      "DELETE FROM employees WHERE ?",
-      {
-        id: parseInt(removeId),
-      },
-      (err, res) => {
-        if (err) throw err;
-        console.log(`${res.affectedRows} deleted!\n`);
-      }
-    );
-    init();
-  });
+
+const removeEmployee = (removeId) => {
+  connection.query(
+    "DELETE FROM employees WHERE ?",
+    {
+      id: removeId,
+    },
+    (err, res) => {
+      if (err) throw err;
+      console.log(`${res.affectedRows} deleted!\n`);
+    }
+  );
+  init();
 };
 
 const budget = () => {
@@ -317,5 +300,3 @@ const budget = () => {
 };
 
 init();
-
-// app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
