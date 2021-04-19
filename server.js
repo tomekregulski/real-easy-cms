@@ -127,23 +127,22 @@ const createRole = () => {
   console.log("Creating role...");
   inquirer.prompt(createRoleQues).then((data) => {
     console.log(data);
-    connection.query(
-      "INSERT INTO roles SET ?",
+    connection.query("INSERT INTO roles SET ?", [
       {
         title: data.roleTitle,
       },
       {
-        salary: data.roleSalary,
+        salary: parseInt(data.roleSalary),
       },
       {
-        department_id: data.roleDept,
+        department_id: parseInt(data.roleDept),
       },
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
         // re-prompt the user for if they want to bid or post
-      }
-    );
+      },
+    ]);
     // connection.end();
     init();
   });
@@ -153,8 +152,7 @@ const createEmployee = () => {
   console.log("Creating employee...");
   inquirer.prompt(createEmployeeQues).then((data) => {
     console.log(data);
-    connection.query(
-      "INSERT INTO employees SET ?",
+    connection.query("INSERT INTO employees SET ?", [
       {
         first_name: data.firstName,
       },
@@ -162,16 +160,16 @@ const createEmployee = () => {
         last_name: data.lastName,
       },
       {
-        role_id: data.roleId,
+        role_id: parseInt(data.roleId),
       },
       {
-        manager_id: data.mgrId,
+        manager_id: parseInt(data.mgrId),
       },
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-      }
-    );
+      },
+    ]);
     // connection.end();
     init();
   });
@@ -220,31 +218,96 @@ const updateRole = () => {
 const updateMgr = () => {
   inquirer.prompt(updateEmployeeMgr).then((data) => {
     console.log(data);
-    console.log("Updating employee manager...\n");
-    // const query = connection.query(
-    //   "UPDATE employees SET ? WHERE ?",
-    //   [
-    //     {
-    //       manager: `${updateMgr.mgr}`,
-    //     },
-    //     {
-    //       id: `${updateMgr.id}`,
-    //     },
-    //   ],
-    //   (err, res) => {
-    //     if (err) throw err;
-    //     console.log(`${res.affectedRows} updated!\n`);
-    //   }
-    // );
-    // console.log(query.sql);
+    console.log("Checking the system...");
+    connection.query(
+      "UPDATE employees SET ? WHERE ?",
+      [
+        {
+          manager_id: parseInt(mgrId),
+        },
+        {
+          id: parseInt(empId),
+        },
+      ],
+      (err, res) => {
+        if (err) throw err;
+        console.log("Employee manager has been updated.");
+        console.log(res);
+      }
+    );
+    // connection.end();
+    init();
   });
 };
 
 const remove = () => {
+  inquirer.prompt(removeMenu).then((data) => {
+    console.log(data);
+    if (data.remove === "Department") {
+      console.log(data.remove);
+      removeDepartment();
+    } else if (data.remove === "Role") {
+      console.log(data.remove);
+      removeRole();
+    } else if (data.remove === "Employee") {
+      console.log(data.remove);
+      removeEmployee();
+    }
+  });
   // collect database name
   // collect ID of entry to remove
   // put through the sql command to remove the entry.
   // call select * from the target database to display the updated list.
+};
+
+const removeDepartment = () => {
+  inquirer.prompt(removeDeptQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "DELETE FROM departments WHERE ?",
+      {
+        id: parseInt(removeId),
+      },
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} deleted!\n`);
+      }
+    );
+    init();
+  });
+};
+
+const removeRole = () => {
+  inquirer.prompt(removeRoleQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "DELETE FROM roles WHERE ?",
+      {
+        id: parseInt(removeId),
+      },
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} deleted!\n`);
+      }
+    );
+    init();
+  });
+};
+const removeEmployee = () => {
+  inquirer.prompt(removeEmployeeQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "DELETE FROM employees WHERE ?",
+      {
+        id: parseInt(removeId),
+      },
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${res.affectedRows} deleted!\n`);
+      }
+    );
+    init();
+  });
 };
 
 const budget = () => {

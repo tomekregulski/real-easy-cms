@@ -12,7 +12,7 @@ module.exports = [
   },
   {
     type: "input",
-    name: "role",
+    name: "mgrId",
     message: "What is the ID of employee's new manager?",
     validate(value) {
       if (isNaN(value) === false) {
