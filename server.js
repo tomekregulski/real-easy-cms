@@ -204,7 +204,6 @@ const updateRole = () => {
         console.log(res);
       }
     );
-    // connection.end();
     init();
   });
 };
@@ -212,15 +211,17 @@ const updateRole = () => {
 const updateMgr = () => {
   inquirer.prompt(updateEmployeeMgr).then((data) => {
     console.log(data);
+    const empId = parseInt(data.id);
+    const mgrId = parseInt(data.mgrId);
     console.log("Checking the system...");
     connection.query(
       "UPDATE employees SET ? WHERE ?",
       [
         {
-          manager_id: parseInt(mgrId),
+          manager_id: mgrId,
         },
         {
-          id: parseInt(empId),
+          id: empId,
         },
       ],
       (err, res) => {
