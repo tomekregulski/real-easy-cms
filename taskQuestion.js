@@ -9,6 +9,7 @@ module.exports = [
       "Update Entry",
       "Remove Entry",
       "View Department Budget",
+      "Exit",
     ],
   },
 ];

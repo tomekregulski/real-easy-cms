@@ -7,6 +7,10 @@ const console_table = require("console.table");
 const updateEmployeeRole = require("./updateEmployeeRole");
 const updateEmployeeMgr = require("./updateEmployeeMgr");
 const updateMenu = require("./updateMenu");
+const createDeptQues = require("./createDept");
+const createRoleQues = require("./createRole");
+const createEmployeeQues = require("./createEmployee");
+const createMenu = require("./createMenu");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
@@ -36,6 +40,8 @@ function init() {
       remove();
     } else if (data.task === "View Department Budget") {
       budget();
+    } else {
+      connection.end();
     }
   });
 }
@@ -61,7 +67,8 @@ const getDept = () => {
     if (err) throw err;
     console.log(res);
   });
-  connection.end();
+  //   connection.end();
+  init();
 };
 
 const getRoles = () => {
@@ -69,7 +76,8 @@ const getRoles = () => {
     if (err) throw err;
     console.log(res);
   });
-  connection.end();
+  //   connection.end();
+  init();
 };
 
 const getEmployees = () => {
@@ -77,16 +85,98 @@ const getEmployees = () => {
     if (err) throw err;
     console.log(res);
   });
-  connection.end();
+  //   connection.end();
+  init();
 };
 
 const create = () => {
-  // collect database name and pull up the appropriate follow-up questions
-  // collect the rest of the information needed to create the entry
-  // check that name is not a duplicate
-  // put through the sql command to create the entry.
-  // call select * from the target database to display the updated list.
+  inquirer.prompt(createMenu).then((data) => {
+    console.log(data);
+    if (data.create === "Department") {
+      console.log(data.create);
+      createDepartment();
+    } else if (data.create === "Role") {
+      console.log(data.create);
+      createRole();
+    } else if (data.create === "Employee") {
+      console.log(data.create);
+      createEmployee();
+    }
+  });
 };
+
+const createDepartment = () => {
+  console.log("Creating department...");
+  inquirer.prompt(createDeptQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "INSERT INTO departments SET ?",
+      {
+        name: data.name,
+      },
+      (err) => {
+        if (err) throw err;
+        console.log("The department was created successfully!");
+      }
+    );
+    init();
+  });
+};
+
+const createRole = () => {
+  console.log("Creating role...");
+  inquirer.prompt(createRoleQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "INSERT INTO roles SET ?",
+      {
+        title: data.roleTitle,
+      },
+      {
+        salary: data.roleSalary,
+      },
+      {
+        department_id: data.roleDept,
+      },
+      (err) => {
+        if (err) throw err;
+        console.log("The role was created successfully!");
+        // re-prompt the user for if they want to bid or post
+      }
+    );
+    // connection.end();
+    init();
+  });
+};
+
+const createEmployee = () => {
+  console.log("Creating employee...");
+  inquirer.prompt(createEmployeeQues).then((data) => {
+    console.log(data);
+    connection.query(
+      "INSERT INTO employees SET ?",
+      {
+        first_name: data.firstName,
+      },
+      {
+        last_name: data.lastName,
+      },
+      {
+        role_id: data.roleId,
+      },
+      {
+        manager_id: data.mgrId,
+      },
+      (err) => {
+        if (err) throw err;
+        console.log("The role was created successfully!");
+      }
+    );
+    // connection.end();
+    init();
+  });
+};
+
 const update = () => {
   inquirer.prompt(updateMenu).then((data) => {
     console.log(data.update);
@@ -122,7 +212,8 @@ const updateRole = () => {
         console.log(res);
       }
     );
-    connection.end();
+    // connection.end();
+    init();
   });
 };
 
