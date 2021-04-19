@@ -103,23 +103,26 @@ const update = () => {
 const updateRole = () => {
   inquirer.prompt(updateEmployeeRole).then((data) => {
     console.log(data);
-    console.log("Updating employee role...\n");
-    //   const query = connection.query(
-    //     "UPDATE employees SET ? WHERE ?",
-    //     [
-    //       {
-    //         role: `${updateRole.role}`,
-    //       },
-    //       {
-    //         id: `${updateRole.id}`,
-    //       },
-    //     ],
-    //     (err, res) => {
-    //       if (err) throw err;
-    //       console.log(`${res.affectedRows} updated!\n`);
-    //     }
-    //   );
-    //   console.log(query.sql);
+    const empId = parseInt(data.id);
+    const empRole = parseInt(data.role);
+    console.log("Checking the system...\n");
+    connection.query(
+      "UPDATE employees SET ? WHERE ?",
+      [
+        {
+          role_id: empRole,
+        },
+        {
+          id: empId,
+        },
+      ],
+      (err, res) => {
+        if (err) throw err;
+        console.log("Employee role has been updated.");
+        console.log(res);
+      }
+    );
+    connection.end();
   });
 };
 
