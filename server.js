@@ -66,6 +66,7 @@ const getDept = () => {
   console.log("getting department");
   connection.query("SELECT * FROM departments", (err, res) => {
     if (err) throw err;
+    console.table(res);
   });
   init();
 };
@@ -73,6 +74,7 @@ const getDept = () => {
 const getRoles = () => {
   connection.query("SELECT * FROM roles", (err, res) => {
     if (err) throw err;
+    console.table(res);
   });
   init();
 };
@@ -80,6 +82,7 @@ const getRoles = () => {
 const getEmployees = () => {
   connection.query("SELECT * FROM employees", (err, res) => {
     if (err) throw err;
+    console.table(res);
   });
   init();
 };
@@ -109,6 +112,7 @@ const createDepartment = () => {
       (err) => {
         if (err) throw err;
         console.log("The department was created successfully!");
+        console.table(res);
       }
     );
     init();
@@ -131,6 +135,7 @@ const createRole = () => {
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
+        console.table(res);
       }
     );
     init();
@@ -153,6 +158,7 @@ const createEmployee = () => {
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
+        console.table(res);
       }
     );
     init();
@@ -187,6 +193,7 @@ const updateRole = () => {
       (err, res) => {
         if (err) throw err;
         console.log("Employee role has been updated.");
+        console.table(res);
       }
     );
     init();
@@ -211,7 +218,7 @@ const updateMgr = () => {
       (err, res) => {
         if (err) throw err;
         console.log("Employee manager has been updated.");
-        console.log(res);
+        console.table(res);
       }
     );
     init();
@@ -241,6 +248,7 @@ const removeDepartment = (removeId) => {
     (err, res) => {
       if (err) throw err;
       console.log("Department successfully removed.");
+      console.table(res);
     }
   );
   init();
@@ -255,6 +263,7 @@ const removeRole = (removeId) => {
     (err, res) => {
       if (err) throw err;
       console.log("Role successfully removed.");
+      console.table(res);
     }
   );
   init();
@@ -269,6 +278,7 @@ const removeEmployee = (removeId) => {
     (err, res) => {
       if (err) throw err;
       console.log("Employee successfully removed.");
+      console.table(res);
     }
   );
   init();
