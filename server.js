@@ -66,7 +66,6 @@ const getDept = () => {
   console.log("getting department");
   connection.query("SELECT * FROM departments", (err, res) => {
     if (err) throw err;
-    console.log(res);
   });
   init();
 };
@@ -74,7 +73,6 @@ const getDept = () => {
 const getRoles = () => {
   connection.query("SELECT * FROM roles", (err, res) => {
     if (err) throw err;
-    console.log(res);
   });
   init();
 };
@@ -82,7 +80,6 @@ const getRoles = () => {
 const getEmployees = () => {
   connection.query("SELECT * FROM employees", (err, res) => {
     if (err) throw err;
-    console.log(res);
   });
   init();
 };
@@ -91,13 +88,10 @@ const create = () => {
   inquirer.prompt(createMenu).then((data) => {
     console.log(data);
     if (data.create === "Department") {
-      console.log(data.create);
       createDepartment();
     } else if (data.create === "Role") {
-      console.log(data.create);
       createRole();
     } else if (data.create === "Employee") {
-      console.log(data.create);
       createEmployee();
     }
   });
@@ -124,12 +118,9 @@ const createDepartment = () => {
 const createRole = () => {
   console.log("Creating role...");
   inquirer.prompt(createRoleQues).then((data) => {
-    console.log(data);
     roleTitle = data.roleTitle;
     roleSalary = parseInt(data.roleSalary);
     roleDept = parseInt(data.roleDept);
-    console.log(roleSalary);
-    console.log(roleDept);
     connection.query(
       "INSERT INTO roles SET ?",
       {
@@ -149,7 +140,6 @@ const createRole = () => {
 const createEmployee = () => {
   console.log("Creating employee...");
   inquirer.prompt(createEmployeeQues).then((data) => {
-    console.log(data);
     roleId = parseInt(data.roleId);
     mgrId = parseInt(data.mgrId);
     connection.query(
@@ -171,12 +161,9 @@ const createEmployee = () => {
 
 const update = () => {
   inquirer.prompt(updateMenu).then((data) => {
-    console.log(data.update);
     if (data.update === "Role") {
-      console.log(data.update);
       updateRole();
     } else if (data.update === "Manager") {
-      console.log(data.update);
       updateMgr();
     }
   });
@@ -184,7 +171,6 @@ const update = () => {
 
 const updateRole = () => {
   inquirer.prompt(updateEmployeeRole).then((data) => {
-    console.log(data);
     const empId = parseInt(data.id);
     const empRole = parseInt(data.role);
     console.log("Checking the system...\n");
@@ -201,7 +187,6 @@ const updateRole = () => {
       (err, res) => {
         if (err) throw err;
         console.log("Employee role has been updated.");
-        console.log(res);
       }
     );
     init();
@@ -210,7 +195,6 @@ const updateRole = () => {
 
 const updateMgr = () => {
   inquirer.prompt(updateEmployeeMgr).then((data) => {
-    console.log(data);
     const empId = parseInt(data.id);
     const mgrId = parseInt(data.mgrId);
     console.log("Checking the system...");
@@ -236,14 +220,10 @@ const updateMgr = () => {
 
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
-    console.log(data);
     removeId = parseInt(data.id);
-    console.log(removeId);
     if (data.remove === "Departments") {
-      console.log(data.remove);
       removeDepartment(removeId);
     } else if (data.remove === "Roles") {
-      console.log(data.remove);
       removeRole(removeId);
     } else if (data.remove === "Employees") {
       console.log("calling remove employee");
@@ -260,7 +240,7 @@ const removeDepartment = (removeId) => {
     },
     (err, res) => {
       if (err) throw err;
-      console.log(`${res.affectedRows} deleted!\n`);
+      console.log("Department successfully removed.");
     }
   );
   init();
@@ -274,7 +254,7 @@ const removeRole = (removeId) => {
     },
     (err, res) => {
       if (err) throw err;
-      console.log(`${res.affectedRows} deleted!\n`);
+      console.log("Role successfully removed.");
     }
   );
   init();
@@ -288,7 +268,7 @@ const removeEmployee = (removeId) => {
     },
     (err, res) => {
       if (err) throw err;
-      console.log(`${res.affectedRows} deleted!\n`);
+      console.log("Employee successfully removed.");
     }
   );
   init();
