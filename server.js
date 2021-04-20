@@ -12,6 +12,7 @@ const createRoleQues = require("./db/questions/createRole");
 const createEmployeeQues = require("./db/questions/createEmployee");
 const createMenu = require("./db/questions/createMenu");
 const removeMenu = require("./db/questions/removeMenu");
+const budgetQues = require("./db/questions/budget");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
@@ -285,9 +286,24 @@ const removeEmployee = (removeId) => {
 };
 
 const budget = () => {
-  // collect department name
-  // put through the sql command to get the sum total of salaries in that department
-  // call select * from the target department to display the itemized list.
+  inquirer.prompt(budgetQues).then((data) => {
+    dept = data.id;
+    connection.query(
+      "SELECT employees.first_name, employees.last_name, roles.salary, roles.department_id FROM employees Inner Join roles ON roles.id = employees.role_id WHERE ?",
+      {
+        department_id: dept,
+      },
+      (err, res) => {
+        if (err) throw err;
+        console.log("Employee successfully removed.");
+        console.table(res);
+      }
+    );
+    init();
+    // collect department name
+    // put through the sql command to get the sum total of salaries in that department
+    // call select * from the target department to display the itemized list.
+  });
 };
 
 init();
