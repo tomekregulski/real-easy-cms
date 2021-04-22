@@ -73,20 +73,38 @@ const getDept = () => {
 };
 
 const getRoles = () => {
-  connection.query("SELECT * FROM roles", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-  });
+  // connection.query("SELECT * FROM roles", (err, res) => {
+  connection.query(
+    "SELECT * FROM roles LEFT JOIN departments on roles.department_id = departments.id",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+    }
+  );
   init();
 };
 
 const getEmployees = () => {
-  connection.query("SELECT * FROM employees", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-  });
+  // connection.query("SELECT * FROM employees", (err, res) => {
+  connection.query(
+    "SELECT employees.id, first_name, last_name, title, salary, manager_id FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id",
+    (err, res) => {
+      if (err) throw err;
+      console.table(res);
+    }
+  );
   init();
 };
+
+// const getEmployeesByMgr = () => {
+//   // connection.query("SELECT * FROM employees", (err, res) => {
+//     connection.query("SELECT manager_id, employee.id, first_name, last_name, title, dept_name FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id ORDER BY manager_id DESC", (err, res) => {
+//       if (err) throw err;
+//       console.table(res);
+//     }
+//   );
+//   init();
+// };
 
 const create = () => {
   inquirer.prompt(createMenu).then((data) => {
@@ -300,9 +318,6 @@ const budget = () => {
       }
     );
     init();
-    // collect department name
-    // put through the sql command to get the sum total of salaries in that department
-    // call select * from the target department to display the itemized list.
   });
 };
 
