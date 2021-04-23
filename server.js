@@ -307,6 +307,8 @@ const updateMgr = () => {
     });
 };
 
+// UPDATE REMOVE TO MATCH ROLE FLOW
+
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
     // removeId = parseInt(data.id);
@@ -368,6 +370,8 @@ const removeEmployee = (removeId) => {
   );
   init();
 };
+
+// UPDATE TO USE NEW VARIABLES
 
 const budget = () => {
   inquirer.prompt(budgetQues).then((data) => {
