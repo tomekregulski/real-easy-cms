@@ -82,6 +82,15 @@ const updateEmpMgr = [
   },
 ];
 
+const deleteDepartment = [
+  {
+    type: "list",
+    name: "deleteDepartment",
+    message: "Please select which department to delete.",
+    choices: currentDepartments,
+  },
+];
+
 const deleteRole = [
   {
     type: "list",
@@ -167,7 +176,6 @@ const getDept = () => {
 };
 
 const getRoles = () => {
-  // connection.query("SELECT * FROM roles", (err, res) => {
   connection.query(
     "SELECT * FROM roles LEFT JOIN departments on roles.department_id = departments.id",
     (err, res) => {
@@ -179,7 +187,6 @@ const getRoles = () => {
 };
 
 const getEmployees = () => {
-  // connection.query("SELECT * FROM employees", (err, res) => {
   connection.query(
     "SELECT employees.id, first_name, last_name, title, salary, manager_id FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id",
     (err, res) => {
@@ -187,18 +194,8 @@ const getEmployees = () => {
       console.table(res);
     }
   );
-  // init();
+  init();
 };
-
-// const getEmployeesByMgr = () => {
-//   // connection.query("SELECT * FROM employees", (err, res) => {
-//     connection.query("SELECT manager_id, employee.id, first_name, last_name, title, dept_name FROM employees LEFT JOIN roles on employees.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id ORDER BY manager_id DESC", (err, res) => {
-//       if (err) throw err;
-//       console.table(res);
-//     }
-//   );
-//   init();
-// };
 
 const create = () => {
   inquirer.prompt(createMenu).then((data) => {
@@ -225,7 +222,6 @@ const createDepartment = () => {
       (err) => {
         if (err) throw err;
         console.log("The department was created successfully!");
-        console.table(res);
       }
     );
     init();
@@ -248,7 +244,6 @@ const createRole = () => {
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-        // console.table(res);
       }
     );
     init();
@@ -271,7 +266,6 @@ const createEmployee = () => {
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-        console.table(res);
       }
     );
     init();
@@ -331,13 +325,37 @@ const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
     // removeId = parseInt(data.id);
     if (data.remove === "Departments") {
-      removeDepartment(removeId);
+      // removeDepartment(removeId);
+      deleteDepartmentQuery();
     } else if (data.remove === "Roles") {
       removeRole();
     } else if (data.remove === "Employees") {
       console.log("calling remove employee");
       removeEmployee(removeId);
     }
+  });
+};
+
+const deleteDepartmentQuery = () => {
+  inquirer.prompt(deleteDepartment).then(({ deleteDepartment }) => {
+    connection.query(
+      "DELETE FROM departments WHERE name = ?",
+      [deleteDepartment],
+      (err, res) => {
+        if (err) {
+          if (err) throw err;
+        } else {
+          console.log(
+            `Deleted ${deleteDepartment} from the departments table. Updating accessible data...`
+          );
+          currentDepartments.splice(
+            currentDepartments.indexOf(deleteDepartment),
+            1
+          );
+        }
+      }
+    );
+    init();
   });
 };
 
