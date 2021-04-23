@@ -13,10 +13,66 @@ const createEmployeeQues = require("./db/questions/createEmployee");
 const createMenu = require("./db/questions/createMenu");
 const removeMenu = require("./db/questions/removeMenu");
 const budgetQues = require("./db/questions/budget");
+// let { currentRoles, currentEmployees } = require("./db/questions/testEmp");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
 const pass = require("./config");
+
+let currentRoles = [];
+let renderRoles = () => {
+  connection.query("SELECT id, title FROM roles", (err, res) => {
+    if (err) throw err;
+    res.forEach((index) => currentRoles.push(index.title));
+    console.log(currentRoles);
+  });
+};
+
+let currentEmployees = [];
+let renderEmployees = () => {
+  connection.query(
+    "SELECT id, first_name, last_name FROM employees",
+    (err, res) => {
+      if (err) throw err;
+      res.forEach((index) =>
+        currentEmployees.push(
+          `${index.id} - ${index.first_name} ${index.last_name}`
+        )
+      );
+      console.log(currentEmployees);
+    }
+  );
+};
+
+const updateEmpRole = [
+  {
+    type: "list",
+    name: "selectedEmployee",
+    message: "Please select a current employee.",
+    choices: currentEmployees,
+  },
+  {
+    type: "list",
+    name: "newRole",
+    message: "Please input the employee's new role.",
+    choices: currentRoles,
+  },
+];
+
+const updateEmpMgr = [
+  {
+    type: "list",
+    name: "selectedEmployee",
+    message: "Please select a current employee.",
+    choices: currentEmployees,
+  },
+  {
+    type: "list",
+    name: "assignedManager",
+    message: "Please input who this employee reports to.",
+    choices: currentEmployees,
+  },
+];
 
 // connection to db
 const connection = mysql.createConnection({
@@ -28,6 +84,17 @@ const connection = mysql.createConnection({
 });
 
 function init() {
+  // mainMenu();
+  renderRoles();
+  renderEmployees();
+  mainMenu();
+}
+
+const next = () => {
+  inquirer.prompt(updateEmpRole);
+};
+
+const mainMenu = () => {
   inquirer.prompt(taskQuestions).then((data) => {
     console.log(data.task);
     if (data.task === "View Database") {
@@ -46,7 +113,7 @@ function init() {
       connection.end();
     }
   });
-}
+};
 
 const view = () => {
   inquirer.prompt(viewDb).then((data) => {
@@ -93,7 +160,7 @@ const getEmployees = () => {
       console.table(res);
     }
   );
-  init();
+  // init();
 };
 
 // const getEmployeesByMgr = () => {
@@ -185,6 +252,8 @@ const createEmployee = () => {
 };
 
 const update = () => {
+  console.log(currentRoles);
+  console.log(currentEmployees);
   inquirer.prompt(updateMenu).then((data) => {
     if (data.update === "Role") {
       updateRole();
@@ -195,53 +264,38 @@ const update = () => {
 };
 
 const updateRole = () => {
-  inquirer.prompt(updateEmployeeRole).then((data) => {
-    const empId = parseInt(data.id);
-    const empRole = parseInt(data.role);
-    console.log("Checking the system...\n");
+  inquirer.prompt(updateEmpRole).then(({ newRole, selectedEmployee }) => {
     connection.query(
-      "UPDATE employees SET ? WHERE ?",
-      [
-        {
-          role_id: empRole,
-        },
-        {
-          id: empId,
-        },
-      ],
+      "UPDATE employees SET role_id = ? WHERE id = ?",
+      [currentRoles.indexOf(newRole) + 1, parseInt(selectedEmployee)],
       (err, res) => {
         if (err) throw err;
-        console.log("Employee role has been updated.");
-        console.table(res);
+        console.log(
+          `Updated employee ${selectedEmployee}'s role to ${newRole}.`
+        );
+        init();
       }
     );
-    init();
   });
 };
 
 const updateMgr = () => {
-  inquirer.prompt(updateEmployeeMgr).then((data) => {
-    const empId = parseInt(data.id);
-    const mgrId = parseInt(data.mgrId);
-    console.log("Checking the system...");
-    connection.query(
-      "UPDATE employees SET ? WHERE ?",
-      [
-        {
-          manager_id: mgrId,
-        },
-        {
-          id: empId,
-        },
-      ],
-      (err, res) => {
-        if (err) throw err;
-        console.log("Employee manager has been updated.");
-        console.table(res);
-      }
-    );
-    init();
-  });
+  inquirer
+    .prompt(updateEmpMgr)
+    .then(({ selectedEmployee, assignedManager }) => {
+      // In this case we set the manager ID to the employee ID of the person who is becoming the manager
+      connection.query(
+        "UPDATE employees SET manager_id = ? WHERE id = ?",
+        [parseInt(assignedManager), parseInt(selectedEmployee)],
+        (err, res) => {
+          if (err) throw err;
+          console.log(
+            `Updated employee ${selectedEmployee} who now reports to ${assignedManager}.`
+          );
+          init();
+        }
+      );
+    });
 };
 
 const remove = () => {
