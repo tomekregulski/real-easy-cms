@@ -24,7 +24,7 @@ let renderRoles = () => {
   connection.query("SELECT id, title FROM roles", (err, res) => {
     if (err) throw err;
     res.forEach((index) => currentRoles.push(index.title));
-    console.log(currentRoles);
+    // console.log(currentRoles);
   });
 };
 
@@ -39,7 +39,7 @@ let renderEmployees = () => {
           `${index.id} - ${index.first_name} ${index.last_name}`
         )
       );
-      console.log(currentEmployees);
+      // console.log(currentEmployees);
     }
   );
 };
@@ -71,6 +71,15 @@ const updateEmpMgr = [
     name: "assignedManager",
     message: "Please input who this employee reports to.",
     choices: currentEmployees,
+  },
+];
+
+const deleteRole = [
+  {
+    type: "list",
+    name: "deleteRole",
+    message: "Please select which role to delete.",
+    choices: currentRoles,
   },
 ];
 
@@ -221,7 +230,7 @@ const createRole = () => {
       (err) => {
         if (err) throw err;
         console.log("The role was created successfully!");
-        console.table(res);
+        // console.table(res);
       }
     );
     init();
@@ -300,11 +309,11 @@ const updateMgr = () => {
 
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
-    removeId = parseInt(data.id);
+    // removeId = parseInt(data.id);
     if (data.remove === "Departments") {
       removeDepartment(removeId);
     } else if (data.remove === "Roles") {
-      removeRole(removeId);
+      removeRole();
     } else if (data.remove === "Employees") {
       console.log("calling remove employee");
       removeEmployee(removeId);
@@ -321,25 +330,29 @@ const removeDepartment = (removeId) => {
     (err, res) => {
       if (err) throw err;
       console.log("Department successfully removed.");
-      console.table(res);
     }
   );
   init();
 };
 
-const removeRole = (removeId) => {
-  connection.query(
-    "DELETE FROM roles WHERE ?",
-    {
-      id: removeId,
-    },
-    (err, res) => {
-      if (err) throw err;
-      console.log("Role successfully removed.");
-      console.table(res);
-    }
-  );
-  init();
+const removeRole = () => {
+  inquirer.prompt(deleteRole).then(({ deleteRole }) => {
+    connection.query(
+      "DELETE FROM roles WHERE title = ?",
+      [deleteRole],
+      (err, res) => {
+        if (err) {
+          if (err) throw err;
+        } else {
+          console.log(
+            `Deleted ${deleteRole} from the roles table. Updating accessible data...`
+          );
+          currentRoles.splice(currentRoles.indexOf(deleteRole), 1);
+        }
+        init();
+      }
+    );
+  });
 };
 
 const removeEmployee = (removeId) => {
@@ -351,7 +364,6 @@ const removeEmployee = (removeId) => {
     (err, res) => {
       if (err) throw err;
       console.log("Employee successfully removed.");
-      console.table(res);
     }
   );
   init();
