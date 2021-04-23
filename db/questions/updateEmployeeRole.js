@@ -1,24 +1,16 @@
+let { currentRoles, currentEmployees } = require("./renderTables");
+
 module.exports = [
   {
-    type: "input",
-    name: "id",
-    message: "What is the ID of the employee you wish to update?",
-    validate(value) {
-      if (isNaN(value) === false) {
-        return true;
-      }
-      return false;
-    },
+    type: "list",
+    name: "selectedEmployee",
+    message: "Please select a current employee.",
+    choices: currentEmployees,
   },
   {
-    type: "input",
-    name: "role",
-    message: "What is the ID of the employee's new role?",
-    validate(value) {
-      if (isNaN(value) === false) {
-        return true;
-      }
-      return false;
-    },
+    type: "list",
+    name: "newRole",
+    message: "Please input the employee's new role.",
+    choices: currentRoles,
   },
 ];

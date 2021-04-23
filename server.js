@@ -4,7 +4,7 @@ const inquirer = require("inquirer");
 const taskQuestions = require("./db/questions/taskQuestion");
 const viewDb = require("./db/questions/viewDb");
 const console_table = require("console.table");
-const updateEmployeeRole = require("./db/questions/updateEmployeeRole");
+const updateEmpRole = require("./db/questions/updateEmployeeRole");
 const updateEmployeeMgr = require("./db/questions/updateEmployeeMgr");
 const updateMenu = require("./db/questions/updateMenu");
 const createDeptQues = require("./db/questions/createDept");
@@ -13,59 +13,15 @@ const createEmployeeQues = require("./db/questions/createEmployee");
 const createMenu = require("./db/questions/createMenu");
 const removeMenu = require("./db/questions/removeMenu");
 const budgetQues = require("./db/questions/budget");
-// let { currentRoles, currentEmployees } = require("./db/questions/testEmp");
+let {
+  currentRoles,
+  currentEmployees,
+  currentDepartments,
+} = require("./db/questions/renderTables");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
 const pass = require("./config");
-
-let currentRoles = [];
-let renderRoles = () => {
-  connection.query("SELECT id, title FROM roles", (err, res) => {
-    if (err) throw err;
-    res.forEach((index) => currentRoles.push(index.title));
-    // console.log(currentRoles);
-  });
-};
-
-let currentEmployees = [];
-let renderEmployees = () => {
-  connection.query(
-    "SELECT id, first_name, last_name FROM employees",
-    (err, res) => {
-      if (err) throw err;
-      res.forEach((index) =>
-        currentEmployees.push(
-          `${index.id} - ${index.first_name} ${index.last_name}`
-        )
-      );
-      // console.log(currentEmployees);
-    }
-  );
-};
-
-let currentDepartments = [];
-let renderDepartments = () => {
-  connection.query("SELECT id, name FROM departments", (err, res) => {
-    if (err) throw err;
-    res.forEach((index) => currentDepartments.push(index.name));
-  });
-};
-
-const updateEmpRole = [
-  {
-    type: "list",
-    name: "selectedEmployee",
-    message: "Please select a current employee.",
-    choices: currentEmployees,
-  },
-  {
-    type: "list",
-    name: "newRole",
-    message: "Please input the employee's new role.",
-    choices: currentRoles,
-  },
-];
 
 const updateEmpMgr = [
   {
@@ -120,9 +76,9 @@ const connection = mysql.createConnection({
 
 function init() {
   // mainMenu();
-  renderRoles();
-  renderEmployees();
-  renderDepartments();
+  // renderRoles();
+  // renderEmployees();
+  // renderDepartments();
   mainMenu();
 }
 
