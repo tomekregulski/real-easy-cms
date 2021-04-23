@@ -1,16 +1,25 @@
 // dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const taskQuestions = require("./db/questions/taskQuestion");
+const taskQuestions = require("./db/questions/mainMenu");
 const viewDb = require("./db/questions/viewDb");
 const console_table = require("console.table");
-const updateEmpRole = require("./db/questions/updateEmployeeRole");
-const updateEmployeeMgr = require("./db/questions/updateEmployeeMgr");
-const updateMenu = require("./db/questions/updateMenu");
-const createDeptQues = require("./db/questions/createDept");
-const createRoleQues = require("./db/questions/createRole");
-const createEmployeeQues = require("./db/questions/createEmployee");
-const createMenu = require("./db/questions/createMenu");
+const {
+  updateMenu,
+  updateEmpRole,
+  updateEmpMgr,
+} = require("./db/questions/updatePrompts");
+// const updateEmployeeMgr = require("./db/questions/updateEmployeeMgr");
+// const updateMenu = require("./db/questions/updateMenu");
+// const createDeptQues = require("./db/questions/createDept");
+// const createRoleQues = require("./db/questions/createRole");
+// const createEmployeeQues = require("./db/questions/createEmployee");
+const {
+  createMenu,
+  createRoleQues,
+  createEmployeeQues,
+  createDeptQues,
+} = require("./db/questions/createPrompts");
 const removeMenu = require("./db/questions/removeMenu");
 const budgetQues = require("./db/questions/budget");
 let {
@@ -22,21 +31,6 @@ let {
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
 const pass = require("./config");
-
-const updateEmpMgr = [
-  {
-    type: "list",
-    name: "selectedEmployee",
-    message: "Please select a current employee.",
-    choices: currentEmployees,
-  },
-  {
-    type: "list",
-    name: "assignedManager",
-    message: "Please input who this employee reports to.",
-    choices: currentEmployees,
-  },
-];
 
 const deleteDepartment = [
   {
