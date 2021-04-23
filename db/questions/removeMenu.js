@@ -1,5 +1,3 @@
-let { currentRoles, currentEmployees } = require("./renderTables");
-
 module.exports = [
   {
     type: "list",

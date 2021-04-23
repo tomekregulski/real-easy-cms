@@ -1,19 +1,14 @@
 // dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const taskQuestions = require("./db/questions/mainMenu");
 const viewDb = require("./db/questions/viewDb");
 const console_table = require("console.table");
+const viewMenu = require("./db/questions/mainMenu");
 const {
   updateMenu,
   updateEmpRole,
   updateEmpMgr,
 } = require("./db/questions/updatePrompts");
-// const updateEmployeeMgr = require("./db/questions/updateEmployeeMgr");
-// const updateMenu = require("./db/questions/updateMenu");
-// const createDeptQues = require("./db/questions/createDept");
-// const createRoleQues = require("./db/questions/createRole");
-// const createEmployeeQues = require("./db/questions/createEmployee");
 const {
   createMenu,
   createRoleQues,
@@ -21,7 +16,7 @@ const {
   createDeptQues,
 } = require("./db/questions/createPrompts");
 const removeMenu = require("./db/questions/removeMenu");
-const budgetQues = require("./db/questions/budget");
+const { viewDeptBudget, viewMDb } = require("./db/questions/viewDb");
 let {
   currentRoles,
   currentEmployees,
@@ -50,15 +45,6 @@ const deleteRole = [
   },
 ];
 
-const viewDepartmentBudget = [
-  {
-    type: "list",
-    name: "department",
-    message: "Please select which department to check the budget for.",
-    choices: currentDepartments,
-  },
-];
-
 // connection to db
 const connection = mysql.createConnection({
   host: "localhost",
@@ -69,19 +55,11 @@ const connection = mysql.createConnection({
 });
 
 function init() {
-  // mainMenu();
-  // renderRoles();
-  // renderEmployees();
-  // renderDepartments();
   mainMenu();
 }
 
-const next = () => {
-  inquirer.prompt(updateEmpRole);
-};
-
 const mainMenu = () => {
-  inquirer.prompt(taskQuestions).then((data) => {
+  inquirer.prompt(viewMenu).then((data) => {
     console.log(data.task);
     if (data.task === "View Database") {
       console.log(data.task);
@@ -358,7 +336,7 @@ const removeEmployee = (removeId) => {
 };
 
 const deptBudget = () => {
-  inquirer.prompt(viewDepartmentBudget).then(({ department }) => {
+  inquirer.prompt(viewDeptBudget).then(({ department }) => {
     // Matcher is used to grab only the department id, we use the same trick of converting the worded department name into a number
     let matcher = currentDepartments.indexOf(department) + 1;
     // Inner join is used to filter out any null values in the tables
