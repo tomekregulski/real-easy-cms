@@ -22,7 +22,6 @@ let renderRoles = () => {
   connection.query("SELECT id, title FROM roles", (err, res) => {
     if (err) throw err;
     res.forEach((index) => currentRoles.push(index.title));
-    // console.log(currentRoles);
   });
 };
 
@@ -42,6 +41,15 @@ let renderEmployees = () => {
   );
 };
 
+const viewDeptBudget = [
+  {
+    type: "list",
+    name: "department",
+    message: "Please select which department to check the budget for.",
+    choices: currentDepartments,
+  },
+];
+
 renderRoles();
 renderEmployees();
 renderDepartments();
@@ -50,4 +58,5 @@ module.exports = {
   currentEmployees,
   currentRoles,
   currentDepartments,
+  viewDeptBudget,
 };

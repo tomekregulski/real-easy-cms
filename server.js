@@ -1,7 +1,6 @@
 // dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const viewDb = require("./db/questions/viewDb");
 const console_table = require("console.table");
 const viewMenu = require("./db/questions/mainMenu");
 const {
@@ -15,35 +14,23 @@ const {
   createEmployeeQues,
   createDeptQues,
 } = require("./db/questions/createPrompts");
-const removeMenu = require("./db/questions/removeMenu");
-const { viewDeptBudget, viewMDb } = require("./db/questions/viewDb");
+const {
+  removeMenu,
+  deleteDepartment,
+  deleteRole,
+  deleteEmployee,
+} = require("./db/questions/removePrompts");
+const viewDb = require("./db/questions/viewDb");
 let {
   currentRoles,
   currentEmployees,
   currentDepartments,
+  viewDeptBudget,
 } = require("./db/questions/renderTables");
 
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
 const pass = require("./config");
-
-const deleteDepartment = [
-  {
-    type: "list",
-    name: "deleteDepartment",
-    message: "Please select which department to delete.",
-    choices: currentDepartments,
-  },
-];
-
-const deleteRole = [
-  {
-    type: "list",
-    name: "deleteRole",
-    message: "Please select which role to delete.",
-    choices: currentRoles,
-  },
-];
 
 // connection to db
 const connection = mysql.createConnection({
@@ -81,14 +68,14 @@ const mainMenu = () => {
 
 const view = () => {
   inquirer.prompt(viewDb).then((data) => {
-    console.log(data.db);
-    if (data.db === "Departments") {
-      console.log(data.db);
+    console.log(data.name);
+    if (data.name === "Departments") {
+      console.log(data.name);
       getDept();
-    } else if (data.db === "Roles") {
-      console.log(data.db);
+    } else if (data.name === "Roles") {
+      console.log(data.name);
       getRoles();
-    } else if (data.db === "Employees") {
+    } else if (data.name === "Employees") {
       getEmployees();
     }
   });
@@ -228,6 +215,7 @@ const updateRole = () => {
   });
 };
 
+// NEEDS TO BE FIXED STILL USING ID #
 const updateMgr = () => {
   inquirer
     .prompt(updateEmpMgr)
@@ -259,7 +247,7 @@ const remove = () => {
       removeRole();
     } else if (data.remove === "Employees") {
       console.log("calling remove employee");
-      removeEmployee(removeId);
+      removeEmployee();
     }
   });
 };
@@ -287,20 +275,6 @@ const deleteDepartmentQuery = () => {
   });
 };
 
-const removeDepartment = (removeId) => {
-  connection.query(
-    "DELETE FROM departments WHERE ?",
-    {
-      id: removeId,
-    },
-    (err, res) => {
-      if (err) throw err;
-      console.log("Department successfully removed.");
-    }
-  );
-  init();
-};
-
 const removeRole = () => {
   inquirer.prompt(deleteRole).then(({ deleteRole }) => {
     connection.query(
@@ -321,18 +295,21 @@ const removeRole = () => {
   });
 };
 
-const removeEmployee = (removeId) => {
-  connection.query(
-    "DELETE FROM employees WHERE ?",
-    {
-      id: removeId,
-    },
-    (err, res) => {
-      if (err) throw err;
-      console.log("Employee successfully removed.");
-    }
-  );
-  init();
+const removeEmployee = () => {
+  inquirer.prompt(deleteEmployee).then(({ deleteEmployee }) => {
+    connection.query(
+      "DELETE FROM employees WHERE id = ?",
+      [parseInt(deleteEmployee)],
+      (err, res) => {
+        if (err) throw err;
+        console.log(
+          `Deleted ${deleteEmployee} from the employee table. Updating accessible data...`
+        );
+        currentEmployees.splice(currentEmployees.indexOf(deleteEmployee), 1);
+      }
+    );
+    init();
+  });
 };
 
 const deptBudget = () => {
