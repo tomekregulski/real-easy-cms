@@ -20,7 +20,7 @@ const {
   deleteRole,
   deleteEmployee,
 } = require("./db/questions/removePrompts");
-const viewDb = require("./db/questions/viewDb");
+// const viewDb = require("./db/questions/viewDb");
 let {
   currentRoles,
   currentEmployees,
@@ -31,6 +31,15 @@ let {
 // mysql password
 // change file path to './config' once you've added your mysql password to the config file. See README
 const pass = require("./config");
+
+const viewDb = [
+  {
+    type: "list",
+    name: "db",
+    message: "Which Database would you like to view?",
+    choices: ["Departments", "Roles", "Employees"],
+  },
+];
 
 // connection to db
 const connection = mysql.createConnection({
@@ -43,6 +52,7 @@ const connection = mysql.createConnection({
 
 function init() {
   mainMenu();
+  // view();
 }
 
 const mainMenu = () => {
@@ -68,14 +78,14 @@ const mainMenu = () => {
 
 const view = () => {
   inquirer.prompt(viewDb).then((data) => {
-    console.log(data.name);
-    if (data.name === "Departments") {
-      console.log(data.name);
+    console.log(data.db);
+    if (data.db === "Departments") {
+      console.log(data.db);
       getDept();
-    } else if (data.name === "Roles") {
-      console.log(data.name);
+    } else if (data.db === "Roles") {
+      console.log(data.db);
       getRoles();
-    } else if (data.name === "Employees") {
+    } else if (data.db === "Employees") {
       getEmployees();
     }
   });
@@ -215,7 +225,6 @@ const updateRole = () => {
   });
 };
 
-// NEEDS TO BE FIXED STILL USING ID #
 const updateMgr = () => {
   inquirer
     .prompt(updateEmpMgr)
@@ -234,8 +243,6 @@ const updateMgr = () => {
       );
     });
 };
-
-// UPDATE REMOVE TO MATCH ROLE FLOW
 
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {

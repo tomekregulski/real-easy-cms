@@ -26,26 +26,16 @@ const updateEmpRole = [
 
 const updateEmpMgr = [
   {
-    type: "input",
-    name: "id",
-    message: "What is the ID of the employee you wish to update?",
-    validate(value) {
-      if (isNaN(value) === false) {
-        return true;
-      }
-      return false;
-    },
+    type: "list",
+    name: "selectedEmployee",
+    message: "Please select a current employee.",
+    choices: currentEmployees,
   },
   {
-    type: "input",
-    name: "mgrId",
-    message: "What is the ID of employee's new manager?",
-    validate(value) {
-      if (isNaN(value) === false) {
-        return true;
-      }
-      return false;
-    },
+    type: "list",
+    name: "assignedManager",
+    message: "Please input who this employee reports to.",
+    choices: currentEmployees,
   },
 ];
 

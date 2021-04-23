@@ -1,6 +1,6 @@
 let currentDepartments = require("./renderTables");
 
-const viewDb = [
+const viewChoices = [
   {
     type: "list",
     name: "db",
@@ -9,13 +9,4 @@ const viewDb = [
   },
 ];
 
-const viewDeptBudget = [
-  {
-    type: "list",
-    name: "department",
-    message: "Please select which department to check the budget for.",
-    choices: currentDepartments,
-  },
-];
-
-module.exports = { viewDeptBudget, viewDb };
+module.exports = { viewChoices };
