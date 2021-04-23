@@ -44,6 +44,14 @@ let renderEmployees = () => {
   );
 };
 
+let currentDepartments = [];
+let renderDepartments = () => {
+  connection.query("SELECT id, name FROM departments", (err, res) => {
+    if (err) throw err;
+    res.forEach((index) => currentDepartments.push(index.name));
+  });
+};
+
 const updateEmpRole = [
   {
     type: "list",
@@ -83,6 +91,15 @@ const deleteRole = [
   },
 ];
 
+const viewDepartmentBudget = [
+  {
+    type: "list",
+    name: "department",
+    message: "Please select which department to check the budget for.",
+    choices: currentDepartments,
+  },
+];
+
 // connection to db
 const connection = mysql.createConnection({
   host: "localhost",
@@ -96,6 +113,7 @@ function init() {
   // mainMenu();
   renderRoles();
   renderEmployees();
+  renderDepartments();
   mainMenu();
 }
 
@@ -117,7 +135,7 @@ const mainMenu = () => {
     } else if (data.task === "Remove Entry") {
       remove();
     } else if (data.task === "View Department Budget") {
-      budget();
+      deptBudget();
     } else {
       connection.end();
     }
@@ -371,23 +389,36 @@ const removeEmployee = (removeId) => {
   init();
 };
 
-// UPDATE TO USE NEW VARIABLES
-
-const budget = () => {
-  inquirer.prompt(budgetQues).then((data) => {
-    dept = data.id;
+const deptBudget = () => {
+  inquirer.prompt(viewDepartmentBudget).then(({ department }) => {
+    // Matcher is used to grab only the department id, we use the same trick of converting the worded department name into a number
+    let matcher = currentDepartments.indexOf(department) + 1;
+    // Inner join is used to filter out any null values in the tables
     connection.query(
-      "SELECT employees.first_name, employees.last_name, roles.salary, roles.department_id FROM employees Inner Join roles ON roles.id = employees.role_id WHERE ?",
-      {
-        department_id: dept,
-      },
+      "SELECT departments.id, title, salary, first_name, last_name FROM departments INNER JOIN roles on departments.id = roles.department_id INNER JOIN employees on roles.id = employees.role_id",
       (err, res) => {
         if (err) throw err;
-        console.log("Employee successfully removed.");
-        console.table(res);
+        let budget = [];
+        res.forEach((index) => {
+          if (index.id === matcher) {
+            budget.push(index.salary);
+          }
+        });
+        // If nothing matched, then terminate the function before we get to the reduce method which can cause errors
+        if (budget.length === 0) {
+          console.log("There is no one currently workng in this department :(");
+          init();
+        } else {
+          let total = budget.reduce(
+            (accumulator, currentValue) => accumulator + currentValue
+          );
+          console.log(
+            `The budget for the ${department} Department is $${total}.`
+          );
+          init();
+        }
       }
     );
-    init();
   });
 };
 
