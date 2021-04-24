@@ -20,7 +20,7 @@ Finally, one can view the total utilized budget by Department.
 
 All of this is achieved via the MySQL package, allowing Node.js to open a connection and send SQL commands to retireve data based on the user's input via the Inquirer prompts. Console.table is used to format the SQL response as a table in the command line.
 
-This app is not deployed. However, to get a sense of its functionality, I have provided a demo video at the following link: Coming Soon
+This app is not deployed. However, to get a sense of its functionality, I have provided a demo video at the following link: https://drive.google.com/file/d/1hau_v2lmLkfmIDw07DwIVDZOZzYGthAT/view
 
 # Installation and Use
 

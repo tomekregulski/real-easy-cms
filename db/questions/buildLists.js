@@ -49,13 +49,16 @@ const viewDeptBudget = [
   },
 ];
 
-buildRolesList();
-buildEmployeesList();
-buildDepartmentsList();
+// buildRolesList();
+// buildEmployeesList();
+// buildDepartmentsList();
 
 module.exports = {
   employeesList,
   rolesList,
   departmentsList,
   viewDeptBudget,
+  buildEmployeesList,
+  buildRolesList,
+  buildDepartmentsList,
 };

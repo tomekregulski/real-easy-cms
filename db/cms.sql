@@ -23,7 +23,3 @@ CREATE TABLE employees(
 	role_id INT, -- ref to employee role
   manager_id INT, -- ref to another employee (manager)
 );
-
-SELECT * FROM departments;
-SELECT * FROM roles;
-SELECT * FROM employees;

@@ -26,6 +26,9 @@ let {
   employeesList,
   depaertmentsList,
   viewDeptBudget,
+  buildEmployeesList,
+  buildRolesList,
+  buildDepartmentsList,
 } = require("./db/questions/buildLists");
 
 const pass = require("./config");
@@ -47,9 +50,12 @@ const connection = mysql.createConnection({
   database: "cms",
 });
 
-function init() {
+const init = () => {
+  buildRolesList();
+  buildEmployeesList();
+  buildDepartmentsList();
   mainMenu();
-}
+};
 
 const mainMenu = () => {
   inquirer.prompt(viewMenu).then((data) => {
@@ -240,7 +246,6 @@ const remove = () => {
     } else if (data.remove === "Roles") {
       removeRole();
     } else if (data.remove === "Employees") {
-      console.log("calling remove employee");
       removeEmployee();
     }
   });
@@ -283,7 +288,7 @@ const removeRole = () => {
 };
 
 const removeEmployee = () => {
-  inquirer.prompt(employee).then(({ employee }) => {
+  inquirer.prompt(deleteEmployee).then(({ employee }) => {
     connection.query(
       "DELETE FROM employees WHERE id = ?",
       [parseInt(employee)],
