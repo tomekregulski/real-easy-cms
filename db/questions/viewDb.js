@@ -1,5 +1,3 @@
-let currentDepartments = require("./renderTables");
-
 const viewChoices = [
   {
     type: "list",

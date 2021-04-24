@@ -9,34 +9,33 @@ const connection = mysql.createConnection({
   database: "cms",
 });
 
-let currentDepartments = [];
-let renderDepartments = () => {
+let departmentsList = [];
+let buildDepartmentsList = () => {
   connection.query("SELECT id, name FROM departments", (err, res) => {
     if (err) throw err;
-    res.forEach((index) => currentDepartments.push(index.name));
+    res.forEach((index) => departmentsList.push(index.name));
   });
 };
 
-let currentRoles = [];
-let renderRoles = () => {
+let rolesList = [];
+let buildRolesList = () => {
   connection.query("SELECT id, title FROM roles", (err, res) => {
     if (err) throw err;
-    res.forEach((index) => currentRoles.push(index.title));
+    res.forEach((index) => rolesList.push(index.title));
   });
 };
 
-let currentEmployees = [];
-let renderEmployees = () => {
+let employeesList = [];
+let buildEmployeesList = () => {
   connection.query(
     "SELECT id, first_name, last_name FROM employees",
     (err, res) => {
       if (err) throw err;
       res.forEach((index) =>
-        currentEmployees.push(
+        employeesList.push(
           `${index.id} - ${index.first_name} ${index.last_name}`
         )
       );
-      // console.log(currentEmployees);
     }
   );
 };
@@ -46,17 +45,17 @@ const viewDeptBudget = [
     type: "list",
     name: "department",
     message: "Please select which department to check the budget for.",
-    choices: currentDepartments,
+    choices: departmentsList,
   },
 ];
 
-renderRoles();
-renderEmployees();
-renderDepartments();
+buildRolesList();
+buildEmployeesList();
+buildDepartmentsList();
 
 module.exports = {
-  currentEmployees,
-  currentRoles,
-  currentDepartments,
+  employeesList,
+  rolesList,
+  departmentsList,
   viewDeptBudget,
 };

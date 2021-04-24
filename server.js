@@ -20,16 +20,14 @@ const {
   deleteRole,
   deleteEmployee,
 } = require("./db/questions/removePrompts");
-// const viewDb = require("./db/questions/viewDb");
-let {
-  currentRoles,
-  currentEmployees,
-  currentDepartments,
-  viewDeptBudget,
-} = require("./db/questions/renderTables");
 
-// mysql password
-// change file path to './config' once you've added your mysql password to the config file. See README
+let {
+  rolesList,
+  employeesList,
+  depaertmentsList,
+  viewDeptBudget,
+} = require("./db/questions/buildLists");
+
 const pass = require("./config");
 
 const viewDb = [
@@ -41,7 +39,6 @@ const viewDb = [
   },
 ];
 
-// connection to db
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -52,7 +49,6 @@ const connection = mysql.createConnection({
 
 function init() {
   mainMenu();
-  // view();
 }
 
 const mainMenu = () => {
@@ -198,8 +194,8 @@ const createEmployee = () => {
 };
 
 const update = () => {
-  console.log(currentRoles);
-  console.log(currentEmployees);
+  console.log(rolesList);
+  console.log(employeesList);
   inquirer.prompt(updateMenu).then((data) => {
     if (data.update === "Role") {
       updateRole();
@@ -210,15 +206,13 @@ const update = () => {
 };
 
 const updateRole = () => {
-  inquirer.prompt(updateEmpRole).then(({ newRole, selectedEmployee }) => {
+  inquirer.prompt(updateEmpRole).then(({ role, employee }) => {
     connection.query(
       "UPDATE employees SET role_id = ? WHERE id = ?",
-      [currentRoles.indexOf(newRole) + 1, parseInt(selectedEmployee)],
+      [rolesList.indexOf(role) + 1, parseInt(employee)],
       (err, res) => {
         if (err) throw err;
-        console.log(
-          `Updated employee ${selectedEmployee}'s role to ${newRole}.`
-        );
+        console.log(`${employee}'s role has been updated to ${role}.`);
         init();
       }
     );
@@ -226,30 +220,23 @@ const updateRole = () => {
 };
 
 const updateMgr = () => {
-  inquirer
-    .prompt(updateEmpMgr)
-    .then(({ selectedEmployee, assignedManager }) => {
-      // In this case we set the manager ID to the employee ID of the person who is becoming the manager
-      connection.query(
-        "UPDATE employees SET manager_id = ? WHERE id = ?",
-        [parseInt(assignedManager), parseInt(selectedEmployee)],
-        (err, res) => {
-          if (err) throw err;
-          console.log(
-            `Updated employee ${selectedEmployee} who now reports to ${assignedManager}.`
-          );
-          init();
-        }
-      );
-    });
+  inquirer.prompt(updateEmpMgr).then(({ employee, manager }) => {
+    connection.query(
+      "UPDATE employees SET manager_id = ? WHERE id = ?",
+      [parseInt(manager), parseInt(employee)],
+      (err, res) => {
+        if (err) throw err;
+        console.log(`${employee}'s manager has been updated to ${manager}.`);
+        init();
+      }
+    );
+  });
 };
 
 const remove = () => {
   inquirer.prompt(removeMenu).then((data) => {
-    // removeId = parseInt(data.id);
     if (data.remove === "Departments") {
-      // removeDepartment(removeId);
-      deleteDepartmentQuery();
+      removeDepartment();
     } else if (data.remove === "Roles") {
       removeRole();
     } else if (data.remove === "Employees") {
@@ -259,22 +246,17 @@ const remove = () => {
   });
 };
 
-const deleteDepartmentQuery = () => {
-  inquirer.prompt(deleteDepartment).then(({ deleteDepartment }) => {
+const removeDepartment = () => {
+  inquirer.prompt(deleteDepartment).then(({ department }) => {
     connection.query(
       "DELETE FROM departments WHERE name = ?",
-      [deleteDepartment],
+      [department],
       (err, res) => {
         if (err) {
           if (err) throw err;
         } else {
-          console.log(
-            `Deleted ${deleteDepartment} from the departments table. Updating accessible data...`
-          );
-          currentDepartments.splice(
-            currentDepartments.indexOf(deleteDepartment),
-            1
-          );
+          console.log(`${department} has been removed from the database.`);
+          depaertmentsList.splice(depaertmentsList.indexOf(department), 1);
         }
       }
     );
@@ -283,18 +265,16 @@ const deleteDepartmentQuery = () => {
 };
 
 const removeRole = () => {
-  inquirer.prompt(deleteRole).then(({ deleteRole }) => {
+  inquirer.prompt(deleteRole).then(({ role }) => {
     connection.query(
       "DELETE FROM roles WHERE title = ?",
-      [deleteRole],
+      [role],
       (err, res) => {
         if (err) {
           if (err) throw err;
         } else {
-          console.log(
-            `Deleted ${deleteRole} from the roles table. Updating accessible data...`
-          );
-          currentRoles.splice(currentRoles.indexOf(deleteRole), 1);
+          console.log(`${role} has been removed from the database.`);
+          rolesList.splice(rolesList.indexOf(role), 1);
         }
         init();
       }
@@ -303,16 +283,14 @@ const removeRole = () => {
 };
 
 const removeEmployee = () => {
-  inquirer.prompt(deleteEmployee).then(({ deleteEmployee }) => {
+  inquirer.prompt(employee).then(({ employee }) => {
     connection.query(
       "DELETE FROM employees WHERE id = ?",
-      [parseInt(deleteEmployee)],
+      [parseInt(employee)],
       (err, res) => {
         if (err) throw err;
-        console.log(
-          `Deleted ${deleteEmployee} from the employee table. Updating accessible data...`
-        );
-        currentEmployees.splice(currentEmployees.indexOf(deleteEmployee), 1);
+        console.log(`${employee} has been removed from the database.`);
+        employeesList.splice(employeesList.indexOf(employee), 1);
       }
     );
     init();
@@ -321,29 +299,26 @@ const removeEmployee = () => {
 
 const deptBudget = () => {
   inquirer.prompt(viewDeptBudget).then(({ department }) => {
-    // Matcher is used to grab only the department id, we use the same trick of converting the worded department name into a number
-    let matcher = currentDepartments.indexOf(department) + 1;
-    // Inner join is used to filter out any null values in the tables
+    let target = depaertmentsList.indexOf(department) + 1;
     connection.query(
       "SELECT departments.id, title, salary, first_name, last_name FROM departments INNER JOIN roles on departments.id = roles.department_id INNER JOIN employees on roles.id = employees.role_id",
       (err, res) => {
         if (err) throw err;
         let budget = [];
         res.forEach((index) => {
-          if (index.id === matcher) {
+          if (index.id === target) {
             budget.push(index.salary);
           }
         });
-        // If nothing matched, then terminate the function before we get to the reduce method which can cause errors
         if (budget.length === 0) {
-          console.log("There is no one currently workng in this department :(");
+          console.log("There is no one currently workng in this department.");
           init();
         } else {
-          let total = budget.reduce(
+          let totalBudget = budget.reduce(
             (accumulator, currentValue) => accumulator + currentValue
           );
           console.log(
-            `The budget for the ${department} Department is $${total}.`
+            `The ${department} Department's budget is currently $${totalBudget}.`
           );
           init();
         }

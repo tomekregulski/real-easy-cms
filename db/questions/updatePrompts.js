@@ -1,4 +1,4 @@
-let { currentRoles, currentEmployees } = require("./renderTables");
+let { rolesList, employeesList } = require("./buildLists");
 
 const updateMenu = [
   {
@@ -12,30 +12,30 @@ const updateMenu = [
 const updateEmpRole = [
   {
     type: "list",
-    name: "selectedEmployee",
-    message: "Please select a current employee.",
-    choices: currentEmployees,
+    name: "employee",
+    message: "Who's role would you like to update?",
+    choices: employeesList,
   },
   {
     type: "list",
-    name: "newRole",
-    message: "Please input the employee's new role.",
-    choices: currentRoles,
+    name: "role",
+    message: "Please input their new role.",
+    choices: rolesList,
   },
 ];
 
 const updateEmpMgr = [
   {
     type: "list",
-    name: "selectedEmployee",
-    message: "Please select a current employee.",
-    choices: currentEmployees,
+    name: "employee",
+    message: "Who would you like to assign to a new manager?",
+    choices: employeesList,
   },
   {
     type: "list",
-    name: "assignedManager",
-    message: "Please input who this employee reports to.",
-    choices: currentEmployees,
+    name: "manager",
+    message: "WHo is their new manager",
+    choices: employeesList,
   },
 ];
 

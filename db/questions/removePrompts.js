@@ -1,8 +1,4 @@
-let {
-  currentRoles,
-  currentDepartments,
-  currentEmployees,
-} = require("./renderTables");
+let { rolesList, departmentsList, employeesList } = require("./buildLists");
 
 const removeMenu = [
   {
@@ -16,27 +12,27 @@ const removeMenu = [
 const deleteDepartment = [
   {
     type: "list",
-    name: "deleteDepartment",
+    name: "department",
     message: "Please select which department to delete.",
-    choices: currentDepartments,
+    choices: departmentsList,
   },
 ];
 
 const deleteRole = [
   {
     type: "list",
-    name: "deleteRole",
+    name: "role",
     message: "Please select which role to delete.",
-    choices: currentRoles,
+    choices: rolesList,
   },
 ];
 
 const deleteEmployee = [
   {
     type: "list",
-    name: "deleteEmployee",
+    name: "employee",
     message: "Please select which employee to delete.",
-    choices: currentEmployees,
+    choices: employeesList,
   },
 ];
 
