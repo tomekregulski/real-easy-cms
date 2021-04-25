@@ -1,3 +1,4 @@
-const pass = "5itarn44d"; // insert your mysql password
+const pass = ""; // insert your mysql password
+const username = ""; // insert your mysql username
 
-module.exports = pass;
+module.exports = { pass, username };

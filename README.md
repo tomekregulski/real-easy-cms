@@ -9,7 +9,7 @@
 
 # Introduction
 
-This app utlizes mySQL and the Node.js environment to provide a simple solution to managing a CMS. The user interacts with the app via command line, which communicates with the database to retrieve the requested information; as well as add, delete, or update entries.
+This is a Node.js application that utlizes MySQL and the Node.js environment to provide a simple Central Management System. The user interacts with the app via command line, which communicates with the database to retrieve the requested information; as well as add, delete, or update entries.
 
 # Description
 
@@ -24,7 +24,30 @@ This app is not deployed. However, to get a sense of its functionality, I have p
 
 # Installation and Use
 
-Coming Soon
+You must have Node.js installed on your local machine, as well as MySQL and MySQL Workbench.
+
+Once you have cloned this repository to a local directory, you need to set up the database in MySQL Workbench. You can do this by first copying running the code found in db/cms.sql to a new tab in your Workbench. This will create the database and its tables. Once this is done, copy and run the code found in db/seed.sql to load it with stock data. Or, you can model your own data accordingly to load that in.
+
+Next, you need to install all dependencies by running:
+
+```
+npm i
+```
+
+You also need to set up config.js with your MySQL username and password, as such:
+
+```
+pass="yourPassword"
+username="yourUsername"
+```
+
+You should now be ready to run the application from the command line. Initiate the program by running:
+
+```
+npm start
+```
+
+You will see the main menu, and can begin interacting with your database.
 
 # License
 
